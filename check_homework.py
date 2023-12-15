@@ -80,12 +80,14 @@ class TestGetBirthdaysPerWeek(unittest.TestCase):
         expected = {}
         assert (
             result == expected
-        ), """2. Провалено тест коли у функцію передали пустий список користувачів. Функція повинна повертати пустий словник"""
+        ), """2. Провалено тест коли у функцію передали пустий список користувачів. 
+        Функція повинна повертати пустий словник"""
 
     @patch("main.date")
     def test_weekend_birthdays(self, date_mock):
         """
-        5. Успішно пройдено тест коли функція повернула правильний список днів народження користувачів, причому деякі припадають на вихідні
+        5. Успішно пройдено тест коли функція повернула правильний список днів народження користувачів, 
+        причому деякі припадають на вихідні
         """
         date_mock.today.return_value = self.today.date()
         users = [
@@ -97,7 +99,9 @@ class TestGetBirthdaysPerWeek(unittest.TestCase):
                 "name": "Doe",
                 "birthday": (self.today + timedelta(days=6)).date(),
             },
-            {"name": "Alice", "birthday": (self.today + timedelta(days=3)).date()},
+            {
+                "name": "Alice", 
+                "birthday": (self.today + timedelta(days=3)).date()},
         ]
         result = get_birthdays_per_week(users)
         expected = {"Monday": ["John", "Doe"], "Friday": ["Alice"]}
@@ -108,7 +112,8 @@ class TestGetBirthdaysPerWeek(unittest.TestCase):
     @patch("main.date")
     def test_past_birthdays_next_week(self, date_mock):
         """
-        4. Успішно пройдено тест коли функція повернула правильний список днів народження користувачів, де деякі дні народження вже минули в цьому році, але вони будуть на наступному тижні
+        4. Успішно пройдено тест коли функція повернула правильний список днів народження користувачів, 
+        де деякі дні народження вже минули в цьому році, але вони будуть на наступному тижні
         """
         date_mock.today.return_value = self.today.date()
         users = [
@@ -131,12 +136,14 @@ class TestGetBirthdaysPerWeek(unittest.TestCase):
         }
         assert (
             result == expected
-        ), """4. Провалено тест бо функція повернула не правильний список днів народження користувачів, де деякі вже минули в цьому році, але вони будуть на наступному тижні"""
+        ), """4. Провалено тест бо функція повернула не правильний список днів народження користувачів, 
+        де деякі вже минули в цьому році, але вони будуть на наступному тижні"""
 
     @patch("main.date")
     def test_future_birthdays(self, date_mock):
         """
-        3. Успішно пройдено тест коли функція повернула правильний список днів народження користувачів які не припадають на вихідні
+        3. Успішно пройдено тест коли функція повернула правильний список днів народження користувачів 
+        які не припадають на вихідні
         """
 
         date_mock.today.return_value = self.today.date()
@@ -149,7 +156,10 @@ class TestGetBirthdaysPerWeek(unittest.TestCase):
                 "name": "Doe",
                 "birthday": (self.today + timedelta(days=3)).date(),
             },
-            {"name": "Alice", "birthday": (self.today + timedelta(days=-3)).date()},
+            {   
+                "name": "Alice", 
+                "birthday": (self.today + timedelta(days=-3)).date()
+                },
         ]
         result = get_birthdays_per_week(users)
         expected = {"Wednesday": ["John"], "Friday": ["Doe"]}
