@@ -1,36 +1,31 @@
 from datetime import date, timedelta, datetime
+from collections import defaultdict
 
 def get_birthdays_per_week(users):
     if not users:
         return {}
 
     today = date.today()
-    users_to_greet = {}
+    result = defaultdict(list)
 
     for user in users:
         name = user["name"]
         birthday = user["birthday"]
         if birthday.month == 1:
-            birthday = birthday.replace(year=today.year+1)
+            birthday = birthday.replace(year=today.year + 1)
         else:
             birthday = birthday.replace(year=today.year)
+        days_until_birthday = (birthday - today).days
 
-        days_until_birthday = (birthday - today).days        
         if 0 <= days_until_birthday < 7:
             greeting_day = (today + timedelta(days_until_birthday)).strftime("%A")
-            
-            if greeting_day == "Saturday":
+            if greeting_day in ["Saturday", "Sunday"]:
                 greeting_day = "Monday"
-                birthday += timedelta(days=2)
-            elif greeting_day == "Sunday":
-                greeting_day = "Monday"
-                birthday += timedelta(days=1)
-          
-            if greeting_day not in users_to_greet:
-                users_to_greet[greeting_day] = []
-            users_to_greet[greeting_day].append(name)
+                birthday += timedelta(days=(2 if greeting_day == "Sunday" else 1))
 
-    return users_to_greet
+            result[greeting_day].append(name)
+
+    return dict(result)
 
 if __name__ == "__main__":
     users = [
@@ -44,6 +39,7 @@ if __name__ == "__main__":
 
     result = get_birthdays_per_week(users)
     print(result)
+
     # Виводимо результат
     for day_name, names in result.items():
         print(f"{day_name}: {', '.join(names)}")
